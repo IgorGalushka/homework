@@ -1,55 +1,84 @@
 <?php
-//Найдите наибольший элемент матрицы и заменить все нечетные элементы на него.
-function genMatrix(int $n = 5, int $m = 5): array {
-    $a = [];
-    for ($i = 0; $i < $n; $i++) {
-        $row = [];
-        for ($j = 0; $j < $m; $j++) {
-            $row[] = mt_rand(0, 9);
-        }
-        $a[] = $row;
-    }
-    return $a;
-}
-
-// Выводит матрицу в виде таблицы
-function showMatrix(array $a): void {
-    foreach ($a as $row) {
-        foreach ($row as $value) {
-            echo $value . ' ';
-        }
-        echo '<br>';
-    }
-}
-
-function findMaxMatrixValue(array $a): int
-//Находит максимальный элемент матрицы
+class Task10
 {
-    $maxValue = $a[0][0];
-    foreach ($a as $raw) {
-        foreach ($raw as $value) {
-            if ($minValue <= $value){
-                $minValue = $value;
+    private ?int $row = null;
+    private ?int $column = null;
+    private int $maxvalue = 0;
+    private array $matrix = [];
+
+    public function __construct(int $row, int $column)
+    {
+        $this->row = $row;
+        $this->column = $column;
+        $this->matrix = $this->genMatrix();
+        $this->getmatrixInfo();
+    }
+
+    public function changeRows(int $row)
+    {
+        $this->row = $row;
+    }
+
+    public function changeColumns(int $column)
+    {
+        $this->column = $column;
+    }
+
+    private function genMatrix(): array
+    {
+        $array = [];
+        for ($i = 0; $i < $this->row; $i++) {
+            $row = [];
+            for ($j = 0; $j < $this->column; $j++) {
+                $row[] = mt_rand(0, 9);
+            }
+            $array[] = $row;
+        }
+        return $array;
+    }
+
+    private function getmatrixInfo()
+    {
+        echo "Текущая матрица:<br>";
+        foreach ($this->matrix as $row) {
+            foreach ($row as $value) {
+                echo $value . ' ';
+            }
+            echo '<br>';
+        }
+    }
+
+    private function findMaxMatrixValue()
+    {
+        foreach ($this->matrix as $row) {
+            foreach ($row as $value) {
+                if ($this->maxvalue < $value) {
+                    $this->maxvalue = $value;
+                }
             }
         }
-
+        $this->showMaxValue();
     }
-    return $maxValue;
-}
 
-function changeOddMatrix(array $a, int $maxValue): array{
-    foreach ($a as $row) {
-        foreach ($row as $value) {
-            if ($value %2 != 0){
-                $value = $maxValue;
+    public function changeOddMatrix()
+    {
+        $this->findMaxMatrixValue();
+        for ($i = 0; $i < $this->row; $i++) {
+            for ($j = 0; $j < $this->column; $j++) {
+                if ($this->matrix[$i][$j] % 2 != 0) {
+                    $this->matrix[$i][$j] = $this->maxvalue;
+                }
             }
         }
+        $this->getmatrixInfo();
     }
-    print_r(showMatrix($a));
-    return $a;
+
+    private function showMaxValue()
+    {
+        echo "Наибольшее число в матрице: " . $this->maxvalue . "<br>";
+    }
 }
 
-$array = genMatrix();
-showMatrix($array);
-$a = findMaxMatrixValue($array);
-changeOddMatrix($array, $m);
+// Пример использования
+$matrix1 = new Task10(5, 5);
+$matrix1->changeOddMatrix();
